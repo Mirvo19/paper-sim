@@ -21,10 +21,17 @@
           <p class="eyebrow">Fold studio</p>
           <h2 id="studioTitle">Shape the paper</h2>
         </div>
+        <div class="button-row">
+          <button id="undoFold" type="button">Undo</button>
+          <button id="resetDesign" type="button">Reset</button>
+        </div>
       </div>
+
       <div class="preview-shell">
-        <p class="placeholder">Preview canvas coming soon.</p>
+        <canvas id="previewCanvas" width="720" height="420" aria-label="Paper airplane preview"></canvas>
       </div>
+
+      <div class="fold-grid" id="foldControls"></div>
     </section>
 
     <section class="tunnel-panel" aria-labelledby="tunnelTitle">
@@ -33,11 +40,18 @@
           <p class="eyebrow">Wind tunnel</p>
           <h2 id="tunnelTitle">Launch and compare</h2>
         </div>
+        <div class="button-row">
+          <button id="launchButton" type="button">Launch</button>
+          <button id="resetFlight" type="button">Reset flight</button>
+        </div>
       </div>
+
       <div class="flight-shell">
-        <p class="placeholder">Flight simulation coming soon.</p>
+        <canvas id="flightCanvas" width="980" height="520" aria-label="Flight simulation"></canvas>
       </div>
     </section>
   </main>
+
+  <script src="script.js"></script>
 </body>
 </html>
