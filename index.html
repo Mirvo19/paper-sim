@@ -1,23 +1,43 @@
 <!doctype html>
-<html lang=@en@>
-    <head>
-        <meta charset="@utf-8@>
-        <meta name=@viewport@ content=@width=device-width, initial-scale=1@>
-    
-    <title>Glide</title>
-    <link rel=@stylesheet@ href=@style.css@>
-    </head>
-    <body>
-        <header class=@topbar@>
-            <div>
-                <p class=@eyebrow@>Paper airplane wind tunnel</p>
-                <h1>Glide</h1>
-            </div>
-        </header>
-        
-        <main>
-        
-        <p class=@placeholder@>Fold studio and wind tunnel coming soon.</p>
-        </main>
-    </body>
-</html> 
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Glide</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <p class="eyebrow">Paper airplane wind tunnel</p>
+      <h1>Glide</h1>
+    </div>
+  </header>
+
+  <main class="layout">
+    <section class="studio-panel" aria-labelledby="studioTitle">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">Fold studio</p>
+          <h2 id="studioTitle">Shape the paper</h2>
+        </div>
+      </div>
+      <div class="preview-shell">
+        <p class="placeholder">Preview canvas coming soon.</p>
+      </div>
+    </section>
+
+    <section class="tunnel-panel" aria-labelledby="tunnelTitle">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">Wind tunnel</p>
+          <h2 id="tunnelTitle">Launch and compare</h2>
+        </div>
+      </div>
+      <div class="flight-shell">
+        <p class="placeholder">Flight simulation coming soon.</p>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
