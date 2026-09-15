@@ -53,7 +53,8 @@ const defaultChoices = { nose: "sharp", wingAngle: "wide", wingspan: "long", cre
 const defaultOrder = ["nose", "wingAngle", "wingspan", "crease", "tail", "paper"];
 const state = {
   choices: { ...defaultChoices },
-  order: [...defaultOrder]
+  order: [...defaultOrder],
+  history: []
 };
 const elements = {};
 let previewContext;
@@ -69,6 +70,9 @@ document.addEventListener("DOMContentLoaded", () => {
 function cacheElements() {
   elements.previewCanvas = document.getElementById("previewCanvas");
   elements.foldControls = document.getElementById("foldControls");
+  elements.statsGrid = document.getElementById("statsGrid");
+  elements.undoFold = document.getElementById("undoFold");
+  elements.resetDesign = document.getElementById("resetDesign");
   previewContext = elements.previewCanvas.getContext("2d");
 }
 
@@ -103,27 +107,74 @@ function bindControls() {
     }
     applyChoice(button.dataset.fold, button.dataset.option);
   });
+  elements.undoFold.addEventListener("click", undoChange);
+  elements.resetDesign.addEventListener("click", resetDesign);
   window.addEventListener("resize", () => {
     renderPreview();
   });
+}
+
+function recordSnapshot() {
+  state.history.push({ choices: { ...state.choices }, order: [...state.order] });
+  if (state.history.length > 30) {
+    state.history.shift();
+  }
 }
 
 function applyChoice(foldId, optionId) {
   if (state.choices[foldId] === optionId) {
     return;
   }
+  recordSnapshot();
   state.choices[foldId] = optionId;
+  renderAll();
+}
+
+function undoChange() {
+  const previous = state.history.pop();
+  if (!previous) {
+    return;
+  }
+  state.choices = previous.choices;
+  state.order = previous.order;
+  renderAll();
+}
+
+function resetDesign() {
+  recordSnapshot();
+  state.choices = { ...defaultChoices };
+  state.order = [...defaultOrder];
   renderAll();
 }
 
 function renderAll() {
   renderControls();
+  renderStats();
   renderPreview();
 }
 
 function renderControls() {
   document.querySelectorAll(".choice-button").forEach(button => {
     button.classList.toggle("active", state.choices[button.dataset.fold] === button.dataset.option);
+  });
+}
+
+function renderStats() {
+  const stats = calculateAerodynamics(state.choices, state.order);
+  const values = [
+    ["Lift coefficient", stats.liftCoefficient.toFixed(2)],
+    ["Drag coefficient", stats.dragCoefficient.toFixed(2)],
+    ["Mass", `${(stats.mass * 1000).toFixed(0)} g`],
+    ["Center of gravity", `${Math.round(stats.centerOfGravity * 100)}%`],
+    ["Stability", `${Math.round(stats.stability * 100)}%`],
+    ["Wing area", `${stats.wingArea.toFixed(2)} m2`]
+  ];
+  elements.statsGrid.innerHTML = "";
+  values.forEach(([label, value]) => {
+    const node = document.createElement("div");
+    node.className = "stat";
+    node.innerHTML = `<span>${escapeHtml(label)}</span><strong>${escapeHtml(value)}</strong>`;
+    elements.statsGrid.appendChild(node);
   });
 }
 
@@ -330,4 +381,14 @@ function drawLine(context, x1, y1, x2, y2) {
 
 function clamp(value, min, max) {
   return Math.min(max, Math.max(min, value));
+}
+
+function escapeHtml(value) {
+  return String(value).replace(/[&<>"']/g, character => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;"
+  })[character]);
 }

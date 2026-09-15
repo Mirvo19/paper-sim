@@ -190,3 +190,33 @@ canvas {
   border-color: var(--accent);
   background: var(--accent-soft);
 }
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.stat {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+  padding: 12px;
+  min-width: 0;
+}
+
+.stat span {
+  display: block;
+  color: var(--muted);
+  font-size: 0.75rem;
+  margin-bottom: 5px;
+}
+
+.stat strong {
+  display: block;
+  font-family: var(--mono);
+  font-size: clamp(1rem, 2vw, 1.24rem);
+  font-weight: 650;
+  overflow-wrap: anywhere;
+}
