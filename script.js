@@ -58,6 +58,7 @@ const state = {
 };
 const elements = {};
 let previewContext;
+let draggedFold = null;
 
 document.addEventListener("DOMContentLoaded", () => {
   cacheElements();
@@ -70,6 +71,7 @@ document.addEventListener("DOMContentLoaded", () => {
 function cacheElements() {
   elements.previewCanvas = document.getElementById("previewCanvas");
   elements.foldControls = document.getElementById("foldControls");
+  elements.sequenceList = document.getElementById("sequenceList");
   elements.statsGrid = document.getElementById("statsGrid");
   elements.undoFold = document.getElementById("undoFold");
   elements.resetDesign = document.getElementById("resetDesign");
@@ -106,6 +108,41 @@ function bindControls() {
       return;
     }
     applyChoice(button.dataset.fold, button.dataset.option);
+  });
+  elements.sequenceList.addEventListener("dragstart", event => {
+    const item = event.target.closest(".sequence-item");
+    if (!item) {
+      return;
+    }
+    recordSnapshot();
+    draggedFold = item.dataset.fold;
+    item.classList.add("dragging");
+    event.dataTransfer.effectAllowed = "move";
+    event.dataTransfer.setData("text/plain", draggedFold);
+  });
+  elements.sequenceList.addEventListener("dragend", event => {
+    const item = event.target.closest(".sequence-item");
+    if (item) {
+      item.classList.remove("dragging");
+    }
+    draggedFold = null;
+  });
+  elements.sequenceList.addEventListener("dragover", event => {
+    event.preventDefault();
+    const item = event.target.closest(".sequence-item");
+    if (!item || item.dataset.fold === draggedFold) {
+      return;
+    }
+    const nextOrder = [...state.order];
+    const from = nextOrder.indexOf(draggedFold);
+    const to = nextOrder.indexOf(item.dataset.fold);
+    if (from < 0 || to < 0) {
+      return;
+    }
+    nextOrder.splice(from, 1);
+    nextOrder.splice(to, 0, draggedFold);
+    state.order = nextOrder;
+    renderAll();
   });
   elements.undoFold.addEventListener("click", undoChange);
   elements.resetDesign.addEventListener("click", resetDesign);
@@ -149,6 +186,7 @@ function resetDesign() {
 
 function renderAll() {
   renderControls();
+  renderSequence();
   renderStats();
   renderPreview();
 }
@@ -156,6 +194,33 @@ function renderAll() {
 function renderControls() {
   document.querySelectorAll(".choice-button").forEach(button => {
     button.classList.toggle("active", state.choices[button.dataset.fold] === button.dataset.option);
+  });
+}
+
+function renderSequence() {
+  elements.sequenceList.innerHTML = "";
+  state.order.forEach((id, index) => {
+    const definition = definitionById(id);
+    const option = optionById(id, state.choices[id]);
+    const item = document.createElement("li");
+    item.className = "sequence-item";
+    item.draggable = true;
+    item.dataset.fold = id;
+    const number = document.createElement("span");
+    number.className = "sequence-index";
+    number.textContent = String(index + 1).padStart(2, "0");
+    const label = document.createElement("span");
+    label.className = "sequence-label";
+    const strong = document.createElement("strong");
+    strong.textContent = definition.label;
+    const small = document.createElement("span");
+    small.textContent = option.label;
+    label.append(strong, small);
+    const handle = document.createElement("span");
+    handle.className = "handle";
+    handle.textContent = "::";
+    item.append(number, label, handle);
+    elements.sequenceList.appendChild(item);
   });
 }
 

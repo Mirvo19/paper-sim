@@ -133,6 +133,11 @@ h3 {
   margin: 0 0 14px;
 }
 
+.section-heading.compact {
+  align-items: center;
+  margin-top: 18px;
+}
+
 .preview-shell,
 .flight-shell {
   border: 1px solid var(--line);
@@ -189,6 +194,59 @@ canvas {
   color: var(--ink);
   border-color: var(--accent);
   background: var(--accent-soft);
+}
+
+.sequence-block {
+  margin-top: 12px;
+}
+
+.sequence-list {
+  display: grid;
+  gap: 8px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.sequence-item {
+  display: grid;
+  grid-template-columns: 28px 1fr auto;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--panel);
+  padding: 8px 10px;
+  cursor: grab;
+}
+
+.sequence-item.dragging {
+  opacity: 0.45;
+}
+
+.sequence-index {
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 0.84rem;
+}
+
+.sequence-label {
+  min-width: 0;
+}
+
+.sequence-label strong {
+  display: block;
+  font-size: 0.92rem;
+}
+
+.sequence-label span {
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
+.handle {
+  color: var(--muted);
+  font-family: var(--mono);
 }
 
 .stats-grid {
